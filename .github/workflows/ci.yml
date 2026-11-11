@@ -1,0 +1,24 @@
+name: CI
+on:
+  push:
+  pull_request:
+jobs:
+  build-test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with: { dotnet-version: 8.0.x }
+      - run: dotnet restore PowerPlug.sln
+      - run: dotnet build PowerPlug.sln -c Release --no-restore
+      - run: dotnet test PowerPlug.sln -c Release --no-build
+      - name: Idle footprint budget (working set after 10s idle)
+        shell: pwsh
+        run: |
+          $p = Start-Process src/PowerPlug.App/bin/Release/net8.0-windows/PowerPlug.exe -PassThru
+          Start-Sleep 10
+          $p.Refresh()
+          $mb = [math]::Round($p.WorkingSet64 / 1MB, 1)
+          Write-Host "Working set: $mb MB, CPU seconds: $($p.TotalProcessorTime.TotalSeconds)"
+          $p.Kill()
+          if ($mb -gt 60) { throw "Idle memory budget exceeded: $mb MB > 60 MB" }

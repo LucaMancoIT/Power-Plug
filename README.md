@@ -5,4 +5,4 @@ Erweiterung der Windows-Funktionen durch eine Sammlung von Mikro-Tools und ein e
 - [Architektur](docs/ARCHITEKTUR.md)
 - [Roadmap](docs/ROADMAP.md)
 
-Status: Planungsphase.
+Status: Phase 0 (Gerüst: Core, Modul-Host, Awake, Tray-Host, CI). Noch nicht unter Windows gebaut oder gemessen.

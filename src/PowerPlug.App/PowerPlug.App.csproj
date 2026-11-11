@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <AssemblyName>PowerPlug</AssemblyName>
+    <!-- Footprint: workstation non-concurrent GC, no ICU, no extra background GC thread. -->
+    <ServerGarbageCollector>false</ServerGarbageCollector>
+    <ConcurrentGarbageCollection>false</ConcurrentGarbageCollection>
+    <TieredPGO>false</TieredPGO>
+    <UseSystemResourceKeys>true</UseSystemResourceKeys>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PowerPlug.Core\PowerPlug.Core.csproj" />
+    <ProjectReference Include="..\PowerPlug.Modules.Awake\PowerPlug.Modules.Awake.csproj" />
+  </ItemGroup>
+</Project>

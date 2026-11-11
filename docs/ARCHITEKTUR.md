@@ -65,3 +65,15 @@ vom Host einzeln aktiviert/deaktiviert.
 - Online-Wallpaper: Quelle, Lizenzen und Hosting noch zu klären.
 - Advanced Paste (KI) benötigt API-Schlüssel-Verwaltung.
 - Entwicklung/Test nur unter Windows möglich (diese Cloud-Umgebung ist Linux).
+
+## Ressourcen-Strategie (messbar statt versprochen)
+Eine pauschale Garantie ist nicht seriös; stattdessen gelten diese Konstruktionsregeln und Budgets:
+1. **Ein schlanker Host-Prozess** (Tray, WinForms – kein WinUI/WPF im Leerlauf). Einstellungs-UI und
+   Apps Center laufen als **separate On-Demand-Prozesse** und beenden sich beim Schließen.
+2. **Module sind lazy**: deaktivierte Module werden nie instanziiert (Test vorhanden).
+3. **Kein Polling**: Hotkeys über `RegisterHotKey`, Ereignisse statt Timer; Awake blockiert ohne CPU.
+4. **Schwere Module** (Suchindex, Konvertierung, Wallpaper-Engine, Mouse Without Borders) laufen
+   in eigenen Prozessen mit niedriger Priorität und nur bei Bedarf.
+5. **Fehlerisolation**: Ausfall/Timeout eines Moduls beeinträchtigt andere nicht (Test vorhanden).
+6. **Budgets in CI** (Windows-Runner): Leerlauf-Arbeitsspeicher des Hosts ≤ 60 MB (vorläufig, wird
+   nach der ersten Messung angepasst); Log-Datei hart begrenzt (~2 MB); Installationsgröße wird je Phase geprüft.
