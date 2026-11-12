@@ -1,0 +1,37 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerPlug.Core", "src\PowerPlug.Core\PowerPlug.Core.csproj", "{639D5399-3C9F-55C8-952E-B9504281AD54}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerPlug.Modules.Awake", "src\PowerPlug.Modules.Awake\PowerPlug.Modules.Awake.csproj", "{3105313C-2C6F-53F8-A021-D5484646B785}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerPlug.App", "src\PowerPlug.App\PowerPlug.App.csproj", "{BCCD55A5-BF57-590A-8621-6F8D006A9196}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerPlug.Tests", "tests\PowerPlug.Tests\PowerPlug.Tests.csproj", "{8A65C3BB-E731-5502-A796-CBE6E936F605}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{639D5399-3C9F-55C8-952E-B9504281AD54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{639D5399-3C9F-55C8-952E-B9504281AD54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{639D5399-3C9F-55C8-952E-B9504281AD54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{639D5399-3C9F-55C8-952E-B9504281AD54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3105313C-2C6F-53F8-A021-D5484646B785}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3105313C-2C6F-53F8-A021-D5484646B785}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3105313C-2C6F-53F8-A021-D5484646B785}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3105313C-2C6F-53F8-A021-D5484646B785}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCCD55A5-BF57-590A-8621-6F8D006A9196}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCCD55A5-BF57-590A-8621-6F8D006A9196}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCCD55A5-BF57-590A-8621-6F8D006A9196}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCCD55A5-BF57-590A-8621-6F8D006A9196}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A65C3BB-E731-5502-A796-CBE6E936F605}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A65C3BB-E731-5502-A796-CBE6E936F605}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A65C3BB-E731-5502-A796-CBE6E936F605}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A65C3BB-E731-5502-A796-CBE6E936F605}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
