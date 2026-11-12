@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Windows.Forms;
 using PowerPlug.Core.Apps;
 using PowerPlug.Core.Hotkeys;
@@ -42,6 +43,8 @@ internal sealed class TrayContext : ApplicationContext
     private readonly IProcessLauncher _launcher = new ProcessLauncher();
     private readonly string _dataDir;
     private readonly ILog _log;
+    private readonly ToolStripMenuItem _fastBootStatus = new("Fast Boot: noch nicht ausgeführt") { Enabled = false };
+    private bool _fastBootRunning;
 
     public TrayContext(string dataDir, ILog log)
     {
@@ -72,10 +75,24 @@ internal sealed class TrayContext : ApplicationContext
         var fastBoot = new ToolStripMenuItem("Fast Boot starten");
         fastBoot.Click += async (_, _) => await RunFastBootAsync();
         menu.Items.Add(fastBoot);
+        menu.Items.Add(_fastBootStatus);
         var apps = new ToolStripMenuItem("Apps Center");
         menu.Items.Add(apps);
-        menu.Items.Add("Konfigurationsordner öffnen", null, (_, _) => OpenConfigFolder());
         menu.Opening += (_, _) => RefreshApps(apps);
+        menu.Items.Add(new ToolStripSeparator());
+        menu.Items.Add("Startmenü-Apps für Fast Boot exportieren…", null, (_, _) => ExportStartMenuApps());
+        menu.Items.Add("Konfigurationsordner öffnen", null, (_, _) => OpenConfigFolder());
+        var autostart = new ToolStripMenuItem("Mit Windows starten") { CheckOnClick = true, Checked = Autostart.IsEnabled() };
+        autostart.Click += (_, _) =>
+        {
+            try { Autostart.Set(autostart.Checked); }
+            catch (Exception ex)
+            {
+                _log.Error("Autostart change failed.", ex);
+                autostart.Checked = Autostart.IsEnabled();
+            }
+        };
+        menu.Items.Add(autostart);
         menu.Items.Add(new ToolStripSeparator());
         foreach (var s in _host.GetStatus())
         {
@@ -98,10 +115,10 @@ internal sealed class TrayContext : ApplicationContext
     private void RefreshApps(ToolStripMenuItem root)
     {
         root.DropDownItems.Clear();
-        var apps = _store.Load().Apps; // re-read so edits to settings.json apply without restart
+        var apps = _store.Load().AppsCenter; // re-read so edits to settings.json apply without restart
         if (apps.Count == 0)
         {
-            root.DropDownItems.Add(new ToolStripMenuItem("(leer – Einträge in settings.json unter \"Apps\")") { Enabled = false });
+            root.DropDownItems.Add(new ToolStripMenuItem("(leer – Einträge in settings.json unter \"AppsCenter\")") { Enabled = false });
             return;
         }
         foreach (var app in apps)
@@ -123,11 +140,44 @@ internal sealed class TrayContext : ApplicationContext
 
     private async Task RunFastBootAsync()
     {
-        var result = await new FastBootRunner(_launcher, _log).RunAsync(_store.Load().Apps);
-        var text = result.Failed.Count == 0
-            ? $"Fast Boot: {result.Started.Count} Anwendung(en) gestartet."
-            : $"Fast Boot: {result.Started.Count} gestartet, {result.Failed.Count} fehlgeschlagen (siehe Log).";
-        _tray.ShowBalloonTip(3000, "Power Plug", text, result.Failed.Count == 0 ? ToolTipIcon.Info : ToolTipIcon.Warning);
+        if (_fastBootRunning) return;
+        _fastBootRunning = true;
+        try
+        {
+            var entries = _store.Load().FastBoot;
+            _fastBootStatus.Text = $"Fast Boot: läuft ({entries.Count(e => e.Enabled)} Einträge)…";
+            var result = await new FastBootRunner(_launcher, _log).RunAsync(entries);
+            var text = $"Fast Boot ({DateTime.Now:HH:mm:ss}): {result.Started.Count} gestartet, {result.Failed.Count} fehlgeschlagen";
+            if (entries.Count == 0) text = "Fast Boot: Liste leer (settings.json → \"FastBoot\")";
+            _fastBootStatus.Text = text;
+            _tray.ShowBalloonTip(3000, "Power Plug", text, result.Failed.Count == 0 ? ToolTipIcon.Info : ToolTipIcon.Warning);
+        }
+        catch (Exception ex)
+        {
+            _log.Error("Fast Boot crashed.", ex);
+            _fastBootStatus.Text = "Fast Boot: Fehler (siehe Log)";
+        }
+        finally { _fastBootRunning = false; }
+    }
+
+    /// <summary>Writes all Start-menu apps (incl. published remote apps) as ready-to-copy Fast Boot entries.</summary>
+    private void ExportStartMenuApps()
+    {
+        try
+        {
+            var entries = StartMenuScanner.Scan(StartMenuScanner.DefaultRoots())
+                .Select(a => new FastBootEntry { Name = a.Name, Path = a.Path, Enabled = false })
+                .ToList();
+            Directory.CreateDirectory(_dataDir);
+            var file = Path.Combine(_dataDir, "startmenu-apps.json");
+            File.WriteAllText(file, JsonSerializer.Serialize(entries, new JsonSerializerOptions { WriteIndented = true }));
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("explorer.exe", $"/select,\"{file}\""))?.Dispose();
+        }
+        catch (Exception ex)
+        {
+            _log.Error("Start menu export failed.", ex);
+            _tray.ShowBalloonTip(4000, "Power Plug", $"Export fehlgeschlagen: {ex.Message}", ToolTipIcon.Warning);
+        }
     }
 
     private void OpenConfigFolder()

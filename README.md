@@ -7,16 +7,26 @@ Erweiterung der Windows-Funktionen durch eine Sammlung von Mikro-Tools und ein e
 
 Status: Phase 0 (Gerüst: Core, Modul-Host, Awake, Tray-Host, CI). Noch nicht unter Windows gebaut oder gemessen.
 
-## Apps Center / Fast Boot konfigurieren
-Vorläufig (bis die Einstellungs-Oberfläche existiert) in `%AppData%\PowerPlug\settings.json`:
+## Apps Center und Fast Boot konfigurieren
+Zwei getrennte Listen in `%AppData%\PowerPlug\settings.json` (bis die Einstellungs-Oberfläche existiert):
 ```json
 {
-  "Modules": { "awake": true },
-  "Apps": [
-    { "Name": "Editor", "Path": "notepad.exe", "InFastBoot": true, "DelayMs": 0 },
+  "Modules": { "always-on-top": true },
+  "AppsCenter": [
     { "Name": "Mein Skript", "Path": "C:\\Skripte\\sync.ps1" },
-    { "Name": "Backup", "Path": "C:\\Skripte\\backup.bat", "InFastBoot": true, "DelayMs": 2000 }
+    { "Name": "Backup", "Path": "C:\\Skripte\\backup.bat" }
+  ],
+  "FastBoot": [
+    { "Name": "Editor", "Path": "notepad.exe" },
+    { "Name": "Excel (Remote)", "Path": "C:\\Users\\ich\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Excel.lnk",
+      "DelayMs": 5000, "Retries": 2, "RetryDelayMs": 5000,
+      "WaitForHost": "gateway.firma.de:3389", "WaitTimeoutSec": 120 },
+    { "Name": "Rechner (Store-App)", "Path": "shell:AppsFolder\\Microsoft.WindowsCalculator_8wekyb3d8bbwe!App" }
   ]
 }
 ```
-Tray-Menü: „Fast Boot starten“ startet alle Einträge mit `InFastBoot`, „Apps Center“ listet alle Einträge.
+- **Apps Center** (Tray-Untermenü): eigene Apps, Batch-Dateien und Skripte (`.ps1` läuft mit `-ExecutionPolicy Bypass`).
+- **Fast Boot** (Tray: „Fast Boot starten“): eigene, unabhängige Liste beliebiger Programme. Erlaubt sind `.exe`, `.lnk`, `.rdp`, URLs und `shell:AppsFolder\…` (Store-Apps; Liste per `Get-StartApps`).
+- **Virtualisierte/Remote-Apps** (RDS RemoteApp, Parallels, Citrix …) legen Startmenü-Verknüpfungen an. „Startmenü-Apps für Fast Boot exportieren…“ erzeugt `startmenu-apps.json` mit allen Verknüpfungen; gewünschte Einträge nach `FastBoot` kopieren und `Enabled` auf `true` setzen.
+- Pro Fast-Boot-Eintrag: `DelayMs` (Wartezeit), `Retries`/`RetryDelayMs` (Wiederholung), `WaitForHost` (startet erst, wenn `host:port` erreichbar ist, Standardport 3389) und `WaitTimeoutSec`.
+- Tray: „Mit Windows starten“ aktiviert den Autostart der App (Fast Boot selbst startet per Klick).
