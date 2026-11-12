@@ -75,5 +75,5 @@ Eine pauschale Garantie ist nicht seriös; stattdessen gelten diese Konstruktion
 4. **Schwere Module** (Suchindex, Konvertierung, Wallpaper-Engine, Mouse Without Borders) laufen
    in eigenen Prozessen mit niedriger Priorität und nur bei Bedarf.
 5. **Fehlerisolation**: Ausfall/Timeout eines Moduls beeinträchtigt andere nicht (Test vorhanden).
-6. **Budgets in CI** (Windows-Runner): Leerlauf-Arbeitsspeicher des Hosts ≤ 60 MB (vorläufig, wird
-   nach der ersten Messung angepasst); Log-Datei hart begrenzt (~2 MB); Installationsgröße wird je Phase geprüft.
+6. **Budgets in CI** (Windows-Runner): privater Leerlauf-Speicher des Hosts ≤ 25 MB (gemessen unter Windows: 10,8 MB;
+   Working Set 52,9 MB enthält überwiegend geteilte Seiten und ist daher keine Budget-Größe); Log-Datei hart begrenzt (~2 MB); Installationsgröße wird je Phase geprüft.

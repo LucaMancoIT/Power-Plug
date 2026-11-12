@@ -12,13 +12,13 @@ jobs:
       - run: dotnet restore PowerPlug.sln
       - run: dotnet build PowerPlug.sln -c Release --no-restore
       - run: dotnet test PowerPlug.sln -c Release --no-build
-      - name: Idle footprint budget (working set after 10s idle)
+      - name: Idle footprint budget (private memory after 10s idle)
         shell: pwsh
         run: |
           $p = Start-Process src/PowerPlug.App/bin/Release/net8.0-windows/PowerPlug.exe -PassThru
           Start-Sleep 10
           $p.Refresh()
-          $mb = [math]::Round($p.WorkingSet64 / 1MB, 1)
-          Write-Host "Working set: $mb MB, CPU seconds: $($p.TotalProcessorTime.TotalSeconds)"
+          $mb = [math]::Round($p.PrivateMemorySize64 / 1MB, 1)
+          Write-Host "Private: $mb MB, working set: $([math]::Round($p.WorkingSet64 / 1MB, 1)) MB, CPU seconds: $($p.TotalProcessorTime.TotalSeconds)"
           $p.Kill()
-          if ($mb -gt 60) { throw "Idle memory budget exceeded: $mb MB > 60 MB" }
+          if ($mb -gt 25) { throw "Idle memory budget exceeded: $mb MB > 25 MB" }
