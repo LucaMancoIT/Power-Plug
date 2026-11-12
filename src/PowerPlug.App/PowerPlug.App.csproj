@@ -14,5 +14,6 @@
     <ProjectReference Include="..\PowerPlug.Core\PowerPlug.Core.csproj" />
     <ProjectReference Include="..\PowerPlug.Modules.Awake\PowerPlug.Modules.Awake.csproj" />
     <ProjectReference Include="..\PowerPlug.Modules.AlwaysOnTop\PowerPlug.Modules.AlwaysOnTop.csproj" />
+    <ProjectReference Include="..\PowerPlug.Modules.LightSwitch\PowerPlug.Modules.LightSwitch.csproj" />
   </ItemGroup>
 </Project>

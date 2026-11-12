@@ -30,3 +30,10 @@ Zwei getrennte Listen in `%AppData%\PowerPlug\settings.json` (bis die Einstellun
 - **Virtualisierte/Remote-Apps** (RDS RemoteApp, Parallels, Citrix …) legen Startmenü-Verknüpfungen an. „Startmenü-Apps für Fast Boot exportieren…“ erzeugt `startmenu-apps.json` mit allen Verknüpfungen; gewünschte Einträge nach `FastBoot` kopieren und `Enabled` auf `true` setzen.
 - Pro Fast-Boot-Eintrag: `DelayMs` (Wartezeit), `Retries`/`RetryDelayMs` (Wiederholung), `WaitForHost` (startet erst, wenn `host:port` erreichbar ist, Standardport 3389) und `WaitTimeoutSec`.
 - Tray: „Mit Windows starten“ aktiviert den Autostart der App (Fast Boot selbst startet per Klick).
+
+## Light Switch
+Modul `light-switch` (Tray-Schalter). Wechselt nach Uhrzeit zwischen hellem und dunklem Design:
+```json
+"LightSwitch": { "LightFrom": "07:00", "DarkFrom": "19:00", "ApplyToApps": true, "ApplyToSystem": true }
+```
+Zeiten im Format `HH:mm`; Pläne über Mitternacht (z. B. hell ab 22:00, dunkel ab 06:00) funktionieren. Änderungen an den Zeiten gelten ab der nächsten Auswertung (Moduls neu schalten oder Neustart der App).

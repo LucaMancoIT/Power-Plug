@@ -10,6 +10,8 @@ public sealed class AppSettings
     /// <summary>Apps Center: your own apps, batch files and scripts.</summary>
     public List<AppEntry> AppsCenter { get; set; } = new();
 
+    public LightSwitchSettings LightSwitch { get; set; } = new();
+
     /// <summary>Fast Boot: independent list of programs started together on demand.</summary>
     public List<FastBootEntry> FastBoot { get; set; } = new();
 }

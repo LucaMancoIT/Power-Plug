@@ -7,6 +7,7 @@ using PowerPlug.Core.Modules;
 using PowerPlug.Core.Settings;
 using PowerPlug.Modules.AlwaysOnTop;
 using PowerPlug.Modules.Awake;
+using PowerPlug.Modules.LightSwitch;
 
 namespace PowerPlug.App;
 
@@ -57,6 +58,8 @@ internal sealed class TrayContext : ApplicationContext
             () => new AwakeModule(new WindowsExecutionStateApi())));
         _host.Register(new ModuleDescriptor(AlwaysOnTopModule.Id, "Always On Top (Win+Strg+T)",
             () => new AlwaysOnTopModule(new WindowsWindowApi())));
+        _host.Register(new ModuleDescriptor(LightSwitchModule.Id, "Light Switch (Hell/Dunkel nach Uhrzeit)",
+            () => new LightSwitchModule(new WindowsThemeApi(), () => _store.Load().LightSwitch)));
 
         _tray = new NotifyIcon
         {
