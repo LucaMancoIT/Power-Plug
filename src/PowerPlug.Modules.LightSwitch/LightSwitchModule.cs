@@ -55,7 +55,16 @@ public sealed class LightSwitchModule(IThemeApi api, Func<LightSwitchSettings> s
                 var now = _clock();
 
                 var target = ThemeSchedule.Resolve(now.TimeOfDay, light, dark);
-                if (api.GetCurrent() != target) api.Set(target, s.ApplyToApps, s.ApplyToSystem);
+                var current = api.GetCurrent();
+                if (current != target)
+                {
+                    api.Set(target, s.ApplyToApps, s.ApplyToSystem);
+                    _context?.Log.Info($"Light Switch: {current} -> {target} (apps={s.ApplyToApps}, system={s.ApplyToSystem}).");
+                }
+                else
+                {
+                    _context?.Log.Info($"Light Switch: {target} already active at {now:HH:mm}, no change.");
+                }
 
                 var due = ThemeSchedule.NextChange(now, light, dark) - now + TimeSpan.FromSeconds(1);
                 _timer.Change(due, Timeout.InfiniteTimeSpan);
