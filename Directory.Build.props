@@ -1,11 +1,16 @@
+<!-- Settings shared by every project in this solution. -->
 <Project>
   <PropertyGroup>
     <LangVersion>12.0</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Compiler warnings fail the build, so problems cannot pile up unnoticed. -->
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- Lets non-Windows computers (like CI on Linux) build the Windows-only project too. -->
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <!-- Same source gives byte-identical output. -->
     <Deterministic>true</Deterministic>
+    <!-- Skips the large ICU culture library; saves memory and start-up time. -->
     <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 </Project>

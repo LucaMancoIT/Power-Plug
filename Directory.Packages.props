@@ -1,3 +1,4 @@
+<!-- Central place for NuGet package versions, so all projects use the same ones. -->
 <Project>
   <PropertyGroup><ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally></PropertyGroup>
   <ItemGroup>

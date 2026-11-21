@@ -3,6 +3,7 @@ using Xunit;
 
 namespace PowerPlug.Tests;
 
+// Tests for the Start menu scanner using a temporary folder with fake shortcut files.
 public class StartMenuScannerTests : IDisposable
 {
     private readonly string _root = Path.Combine(Path.GetTempPath(), "pp-sm-" + Guid.NewGuid().ToString("N"));

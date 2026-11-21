@@ -1,10 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <!-- WinExe = a Windows program without a console window. -->
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <AssemblyName>PowerPlug</AssemblyName>
-    <!-- Footprint: workstation non-concurrent GC, no ICU, no extra background GC thread. -->
+    <!-- Keep the memory footprint small: workstation garbage collector without the extra background GC thread. -->
     <ServerGarbageCollector>false</ServerGarbageCollector>
     <ConcurrentGarbageCollection>false</ConcurrentGarbageCollection>
     <TieredPGO>false</TieredPGO>

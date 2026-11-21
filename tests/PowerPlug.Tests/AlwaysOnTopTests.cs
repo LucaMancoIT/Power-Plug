@@ -3,8 +3,11 @@ using Xunit;
 
 namespace PowerPlug.Tests;
 
+// Tests for the Always On Top module. A fake window API stands in for Windows,
+// so no real window is touched.
 public class AlwaysOnTopTests
 {
+    // Fake Windows: remembers which windows are "pinned" in a simple set.
     private sealed class Api : IWindowApi
     {
         public IntPtr Foreground = new(42);

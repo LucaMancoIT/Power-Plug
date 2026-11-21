@@ -5,6 +5,8 @@ using Xunit;
 
 namespace PowerPlug.Tests;
 
+// Tests for the module host (the caretaker): lazy creation, full start/stop cycle,
+// isolation of a failing module, and protection against double registration.
 public class ModuleHostTests
 {
     private sealed class Ctx : IModuleContext
@@ -13,6 +15,7 @@ public class ModuleHostTests
         public IHotkeyService Hotkeys => throw new NotSupportedException();
     }
 
+    // A harmless module that only counts how often it was started, stopped and disposed.
     private sealed class FakeModule(Action? onStart = null) : IModule
     {
         public int Starts, Stops, Disposes;

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <!-- P/Invoke only; Windows-only at runtime but compiles on any OS. -->
+    <!-- Calls Windows functions only at runtime, so it still compiles and tests on any operating system. -->
   </PropertyGroup>
   <ItemGroup><ProjectReference Include="..\PowerPlug.Core\PowerPlug.Core.csproj" /></ItemGroup>
 </Project>

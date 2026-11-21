@@ -6,8 +6,11 @@ using Xunit;
 
 namespace PowerPlug.Tests;
 
+// Tests for the Awake module: it must ask Windows to stay awake on start
+// and clear that request on stop. A fake Windows API records the calls.
 public class AwakeModuleTests
 {
+    // Fake Windows: just writes down every request it receives.
     private sealed class Api : IExecutionStateApi
     {
         public readonly List<ExecutionState> Calls = new();

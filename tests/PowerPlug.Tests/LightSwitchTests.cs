@@ -4,6 +4,8 @@ using Xunit;
 
 namespace PowerPlug.Tests;
 
+// Tests for Light Switch: the pure schedule logic (which theme at which time, next switch time,
+// reading times from text) and the module behaviour with a fake Windows theme API.
 public class LightSwitchTests
 {
     private static readonly TimeSpan H7 = TimeSpan.FromHours(7), H19 = TimeSpan.FromHours(19);
@@ -52,6 +54,7 @@ public class LightSwitchTests
     public void Invalid_times_fall_back(string? text) =>
         Assert.Equal(H7, ThemeSchedule.ParseOrDefault(text, H7));
 
+    // Fake Windows: stores the current theme and records every change request.
     private sealed class Api(Theme current) : IThemeApi
     {
         public Theme Current = current;

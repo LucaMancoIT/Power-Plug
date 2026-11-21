@@ -3,6 +3,8 @@ using Xunit;
 
 namespace PowerPlug.Tests;
 
+// Tests for saving and loading settings: defaults when nothing exists, a lossless round trip,
+// and graceful recovery from a damaged file. Uses a temporary folder that is removed afterwards.
 public class SettingsStoreTests : IDisposable
 {
     private readonly string _dir = Path.Combine(Path.GetTempPath(), "pp-tests-" + Guid.NewGuid().ToString("N"));

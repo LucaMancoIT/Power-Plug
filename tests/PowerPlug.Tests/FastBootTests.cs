@@ -5,8 +5,12 @@ using Xunit;
 
 namespace PowerPlug.Tests;
 
+// Tests for Fast Boot (ordering, delays, retries, waiting for a server) and for the
+// decision how each kind of file is started. Fakes replace real programs, time and network,
+// so these tests are fast and safe.
 public class FastBootTests
 {
+    // Fake launcher: records what would have been started and can be told to fail.
     private sealed class Launcher(Func<LaunchTarget, int, bool>? failWhen = null) : IProcessLauncher
     {
         public readonly List<string> Launched = new();

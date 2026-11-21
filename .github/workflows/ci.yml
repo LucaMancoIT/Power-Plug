@@ -1,3 +1,5 @@
+# Continuous integration: builds the solution and runs the tests on every push and pull request.
+# It also checks that the idle memory of the tray app stays within budget.
 name: CI
 on:
   push:
@@ -12,6 +14,7 @@ jobs:
       - run: dotnet restore PowerPlug.sln
       - run: dotnet build PowerPlug.sln -c Release --no-restore
       - run: dotnet test PowerPlug.sln -c Release --no-build
+      # Start the app, let it idle for 10 seconds, then check its private memory (budget: 25 MB).
       - name: Idle footprint budget (private memory after 10s idle)
         shell: pwsh
         run: |

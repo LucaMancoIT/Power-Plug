@@ -1,11 +1,15 @@
 namespace PowerPlug.Core.Logging;
 
-/// <summary>Size-capped file log: never grows beyond ~2x <c>maxBytes</c> (one backup file).</summary>
+/// <summary>
+/// Writes the log to a text file, but never lets it grow without limit:
+/// when the file gets bigger than <c>maxBytes</c> it is renamed to "*.1" (replacing the previous
+/// backup) and a fresh file is started. So the log never takes more than about twice <c>maxBytes</c>.
+/// </summary>
 public sealed class RollingFileLog : ILog
 {
     private readonly string _path;
     private readonly long _maxBytes;
-    private readonly object _lock = new();
+    private readonly object _lock = new(); // several threads may log at the same time
 
     public RollingFileLog(string path, long maxBytes = 1_000_000)
     {
@@ -25,12 +29,15 @@ public sealed class RollingFileLog : ILog
         {
             lock (_lock)
             {
+                // Too big? Move the old file aside so the log stays small.
                 if (File.Exists(_path) && new FileInfo(_path).Length > _maxBytes)
                     File.Move(_path, _path + ".1", overwrite: true);
+
+                // Timestamps are in UTC so logs are comparable between computers.
                 File.AppendAllText(_path, $"{DateTime.UtcNow:O} {level} {message}{Environment.NewLine}");
             }
         }
-        catch (IOException) { /* logging must never crash the host */ }
-        catch (UnauthorizedAccessException) { }
+        catch (IOException) { /* logging must never crash the app */ }
+        catch (UnauthorizedAccessException) { /* same: ignore if the file cannot be written */ }
     }
 }
